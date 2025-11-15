@@ -86,15 +86,15 @@ const TireManager = ({ team, driver, onCommand, currentTire, tireHealth, positio
               src={tireMapping[currentTire]?.image || hardTiresSvg}
               alt={`${currentTire} tires`}
               className="tire-letter"
-              style={{ width: '24px', height: '24px' }}
+              style={{ width: '28px', height: '28px' }}
             />
             <div className="tire-health-bar" style={{
-              '--health-color': tireHealth > 92 ? '#04b345' :  // // dark green
-                               tireHealth > 87 ? '#abd453' :  // // light green
-                               tireHealth > 80 ? '#fbbf24' :  // yellow
-                               tireHealth > 75 ? '#f97316' :  // orange 
-                               tireHealth > 70 ? '#ef4444' :  // light red
-                               '#dc2626',                     // dark red
+              '--health-color': tireHealth > 92 ? '#04b345' :
+                               tireHealth > 87 ? '#abd453' :
+                               tireHealth > 80 ? '#fbbf24' :
+                               tireHealth > 75 ? '#f97316' :
+                               tireHealth > 70 ? '#ef4444' :
+                               '#dc2626',
               '--health-percentage': `${tireHealth}%`
             }}></div>
             <span className="tire-health">{Math.floor(tireHealth)}%</span>
@@ -191,9 +191,9 @@ const TireManager = ({ team, driver, onCommand, currentTire, tireHealth, positio
                   disabled={!isEditable}
                 >
                   <img 
-                    src={tire.image}
+                    src={tire.image || "/placeholder.svg"}
                     alt={tire.alt}
-                    style={{ width: '20spx', height: '20px' }}
+                    style={{ width: '20px', height: '20px' }}
                   />
                 </PitOptionButton>
               ))}

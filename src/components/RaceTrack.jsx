@@ -1,13 +1,13 @@
-import React from 'react';
+import React from "react";
 import { motion } from "framer-motion";
-import { catmullRom2bezier } from '../utils/catmullRom2bezier';
-import { PITLANE_LENGTH } from '../data/constants';
-import { NotificationsModal } from './NotificationsModal';
+import { catmullRom2bezier } from "../utils/catmullRom2bezier";
+import { PITLANE_LENGTH } from "../data/constants";
+import { NotificationsModal } from "./NotificationsModal";
 
-export const RaceTrack = ({ 
-  trackPoints, 
-  cars, 
-  pathRef, 
+export const RaceTrack = ({
+  trackPoints,
+  cars,
+  pathRef,
   pathLength,
   paused = false,
   setPaused = () => {},
@@ -23,7 +23,7 @@ export const RaceTrack = ({
   isModalOpen = false,
   raceTime = 0,
   highlightedDriver = null,
-  setHighlightedDriver = () => {}
+  setHighlightedDriver = () => {},
 }) => {
   // Compute the current leader based on laps and normalized distance
   const sortedCars = [...cars].sort((a, b) => {
@@ -37,20 +37,25 @@ export const RaceTrack = ({
   const trackPathD = catmullRom2bezier(trackPoints, true);
 
   return (
-    <div className="border rounded-2xl p-2 inline-block h-full" style={{ position: 'relative' }}>
+    <div
+      className="border rounded-2xl p-2 inline-block h-full"
+      style={{ position: "relative" }}
+    >
       <div className="race-nav-bar">
-        <button 
+        <button
           className="race-nav-button"
-          onClick={() => setPaused(prev => !prev)}
+          onClick={() => setPaused((prev) => !prev)}
           disabled={apiResponsesPending}
         >
           {apiResponsesPending ? (
             <div className="spinner"></div>
+          ) : paused ? (
+            "Play"
           ) : (
-            paused ? "Play" : "Stop"
+            "Stop"
           )}
         </button>
-        <button 
+        <button
           className="race-nav-item clickable"
           onClick={() => {
             setIsModalOpen(true);
@@ -59,7 +64,7 @@ export const RaceTrack = ({
         >
           All ({notifications.length})
         </button>
-        {availableTeams.map(team => (
+        {availableTeams.map((team) => (
           <button
             key={team}
             className="race-nav-item clickable"
@@ -67,20 +72,31 @@ export const RaceTrack = ({
               const wasNotPaused = !paused;
               setNotificationPause(wasNotPaused);
               setIsModalOpen(true);
-              const teamNotifications = notifications.filter(n => n.team === team);
+              const teamNotifications = notifications.filter(
+                (n) => n.team === team
+              );
               if (teamNotifications.length > 0) {
                 setSelectedNotification(teamNotifications[0]);
               }
             }}
             style={{
-              backgroundColor: selectedNotification?.team === team ? teamColors[team] : 'inherit'
+              backgroundColor:
+                selectedNotification?.team === team
+                  ? teamColors[team]
+                  : "inherit",
+              color: "white",
             }}
           >
-            {team} ({notifications.filter(n => n.team === team).length})
+            {team} ({notifications.filter((n) => n.team === team).length})
           </button>
         ))}
       </div>
-      <svg viewBox="0 0 630 423" preserveAspectRatio="xMidYMid meet" className="race-track-bg" style={{width: '100%', height: 'auto'}}>
+      <svg
+        viewBox="0 0 630 423"
+        preserveAspectRatio="xMidYMid meet"
+        className="race-track-bg"
+        style={{ width: "100%", height: "auto" }}
+      >
         <defs>
           {/* Gradient for the track. */}
           <linearGradient id="trackGradient" x1="0%" y1="0%" x2="100%" y2="0%">
@@ -88,7 +104,6 @@ export const RaceTrack = ({
             <stop offset="50%" stopColor="#fffdd0" stopOpacity="1" />
             <stop offset="100%" stopColor="#fff5ba" stopOpacity="0.8" />
           </linearGradient>
-          
 
           {/* Filter for the track glow. */}
           <filter id="trackGlow">
@@ -108,7 +123,6 @@ export const RaceTrack = ({
           transform="translate(2, 2)"
         />
 
-
         {/* Main track path with glow. */}
         <path
           ref={pathRef}
@@ -118,7 +132,7 @@ export const RaceTrack = ({
           fill="none"
           filter="url(#trackGlow)"
           style={{
-            filter: "drop-shadow(0 0 3px rgba(255, 245, 186, 0.5))"
+            filter: "drop-shadow(0 0 3px rgba(255, 245, 186, 0.5))",
           }}
         />
         {/* Additional track outline. */}
@@ -128,7 +142,7 @@ export const RaceTrack = ({
           strokeWidth={12}
           fill="none"
           style={{
-            filter: "drop-shadow(0 0 3px rgba(249, 255, 186, 0.3))"
+            filter: "drop-shadow(0 0 3px rgba(249, 255, 186, 0.3))",
           }}
         />
         {/* Pit lane with gradient and animation. */}
@@ -139,7 +153,9 @@ export const RaceTrack = ({
               stroke="#333"
               strokeWidth={9}
               fill="none"
-              strokeDasharray={`${pathLength - PITLANE_LENGTH} ${PITLANE_LENGTH}`}
+              strokeDasharray={`${
+                pathLength - PITLANE_LENGTH
+              } ${PITLANE_LENGTH}`}
               strokeDashoffset={-PITLANE_LENGTH / 2}
             />
             <path
@@ -148,24 +164,31 @@ export const RaceTrack = ({
               stroke="linear-gradient(90deg, #666, #999)"
               strokeWidth={7}
               fill="none"
-              strokeDasharray={`${pathLength - PITLANE_LENGTH} ${PITLANE_LENGTH}`}
+              strokeDasharray={`${
+                pathLength - PITLANE_LENGTH
+              } ${PITLANE_LENGTH}`}
               strokeDashoffset={-PITLANE_LENGTH / 2}
             />
           </>
         )}
 
-                {/* Pit lane */}
-
         {/* Definition of the checkered pattern. */}
         <defs>
-          <pattern id="checkered" x="0" y="0" width="4" height="4" patternUnits="userSpaceOnUse">
-            <rect x="0" y="0" width="2" height="2" fill="white"/>
-            <rect x="2" y="0" width="2" height="2" fill="black"/>
-            <rect x="0" y="2" width="2" height="2" fill="black"/>
-            <rect x="2" y="2" width="2" height="2" fill="white"/>
+          <pattern
+            id="checkered"
+            x="0"
+            y="0"
+            width="4"
+            height="4"
+            patternUnits="userSpaceOnUse"
+          >
+            <rect x="0" y="0" width="2" height="2" fill="white" />
+            <rect x="2" y="0" width="2" height="2" fill="black" />
+            <rect x="0" y="2" width="2" height="2" fill="black" />
+            <rect x="2" y="2" width="2" height="2" fill="white" />
           </pattern>
         </defs>
-        
+
         {/* Start/finish line. */}
         {trackPoints.length > 0 && (
           <line
@@ -177,13 +200,18 @@ export const RaceTrack = ({
             strokeWidth={6}
           />
         )}
-        
+
         {/* 75% track marker. */}
-        {pathRef.current && pathLength > 0 && (
+        {pathRef.current &&
+          pathLength > 0 &&
           (() => {
             const point = pathRef.current.getPointAtLength(pathLength * 0.75);
-            const nextPoint = pathRef.current.getPointAtLength(pathLength * 0.75 + 1);
-            const angle = Math.atan2(nextPoint.y - point.y, nextPoint.x - point.x) + Math.PI/2;
+            const nextPoint = pathRef.current.getPointAtLength(
+              pathLength * 0.75 + 1
+            );
+            const angle =
+              Math.atan2(nextPoint.y - point.y, nextPoint.x - point.x) +
+              Math.PI / 2;
             return (
               <line
                 x1={point.x + Math.cos(angle) * 5}
@@ -194,121 +222,155 @@ export const RaceTrack = ({
                 strokeWidth={8}
               />
             );
-          })()
-        )}
+          })()}
         {/* Cars. */}
-        {[...cars].sort((a, b) => {
-          // Highlighted car should be rendered last (on top)
-          if (a.name === highlightedDriver) return 1;
-          if (b.name === highlightedDriver) return -1;
-          // Then sort by pit stop status
-          if (a.inPitStop && !b.inPitStop) return -1;
-          if (!a.inPitStop && b.inPitStop) return 1;
-          return 0;
-        }).map((car) => {
-          let posX = trackPoints[0]?.x || 0;
-          let posY = trackPoints[0]?.y || 0;
-          
-          if (pathRef.current && pathLength > 0 && !isNaN(car.distanceTraveled)) {
-            try {
-              const normalizedDistance = ((car.distanceTraveled % pathLength) + pathLength) % pathLength;
-              if (isFinite(normalizedDistance)) {
-                const pt = pathRef.current.getPointAtLength(normalizedDistance);
-                
-                // Calculate perpendicular offset for cars in pit stop
-                if (car.inPitStop) {
-                  // Get point slightly ahead to determine direction
-                  const ptAhead = pathRef.current.getPointAtLength(normalizedDistance + 1);
-                  // Calculate perpendicular vector
-                  const dx = ptAhead.x - pt.x;
-                  const dy = ptAhead.y - pt.y;
-                  const length = Math.sqrt(dx * dx + dy * dy);
-                  // Normalize and rotate 90 degrees
-                  const offsetX = -dy / length * -4; // 10 pixels offset
-                  const offsetY = dx / length * -4;
-                  
-                  posX = pt.x + offsetX;
-                  posY = pt.y + offsetY;
-                } else {
-                  posX = pt.x;
-                  posY = pt.y;
-                }
-              }
-            } catch (error) {
-              console.warn(`Failed to calculate position for car ${car.name}:`, error);
-            }
-          }
+        {[...cars]
+          .sort((a, b) => {
+            // Highlighted car should be rendered last (on top)
+            if (a.name === highlightedDriver) return 1;
+            if (b.name === highlightedDriver) return -1;
+            // Then sort by pit stop status
+            if (a.inPitStop && !b.inPitStop) return -1;
+            if (!a.inPitStop && b.inPitStop) return 1;
+            return 0;
+          })
+          .map((car) => {
+            let posX = trackPoints[0]?.x || 0;
+            let posY = trackPoints[0]?.y || 0;
 
-          return (
-            <g key={`${car.name}-${car.inPitStop ? 'pitstop' : (car.name === leaderName ? 'leader' : 'nonleader')}`}>
+            if (
+              pathRef.current &&
+              pathLength > 0 &&
+              !isNaN(car.distanceTraveled)
+            ) {
+              try {
+                const normalizedDistance =
+                  ((car.distanceTraveled % pathLength) + pathLength) %
+                  pathLength;
+                if (isFinite(normalizedDistance)) {
+                  const pt =
+                    pathRef.current.getPointAtLength(normalizedDistance);
+
+                  // Calculate perpendicular offset for cars in pit stop
+                  if (car.inPitStop) {
+                    // Get point slightly ahead to determine direction
+                    const ptAhead = pathRef.current.getPointAtLength(
+                      normalizedDistance + 1
+                    );
+                    // Calculate perpendicular vector
+                    const dx = ptAhead.x - pt.x;
+                    const dy = ptAhead.y - pt.y;
+                    const length = Math.sqrt(dx * dx + dy * dy);
+                    // Normalize and rotate 90 degrees
+                    const offsetX = (-dy / length) * -4; // 10 pixels offset
+                    const offsetY = (dx / length) * -4;
+
+                    posX = pt.x + offsetX;
+                    posY = pt.y + offsetY;
+                  } else {
+                    posX = pt.x;
+                    posY = pt.y;
+                  }
+                }
+              } catch (error) {
+                console.warn(
+                  `Failed to calculate position for car ${car.name}:`,
+                  error
+                );
+              }
+            }
+
+            return (
               <g
-                onMouseEnter={() => setHighlightedDriver(car.name)}
-                onMouseLeave={() => setHighlightedDriver(null)}
-                style={{ cursor: 'pointer' }}
+                key={`${car.name}-${
+                  car.inPitStop
+                    ? "pitstop"
+                    : car.name === leaderName
+                    ? "leader"
+                    : "nonleader"
+                }`}
               >
-                {/* Shadow under the car. */}
-                <motion.circle
-                  cx={posX}
-                  cy={posY + 2}
-                  r={highlightedDriver === car.name ? 10 : 8}
-                  fill="rgba(0, 0, 0, 0.3)"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5 }}
-                />
-                {/* Main car circle. */}
-                <motion.circle
-                  cx={posX}
-                  cy={posY}
-                  r={highlightedDriver === car.name ? 10 : 8}
-                  fill={car.color}
-                  style={{
-                    stroke: "white",
-                    strokeWidth: 1
-                  }}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5 }}
-                />
-              </g>
-              {car.dotColor && (
-                <motion.circle
-                  cx={posX}
-                  cy={posY}
-                  r={2}
-                  fill={car.dotColor}
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  transition={{ duration: 0.5 }}
-                />
-              )}
-              {true && (
-                <g style={{
-                  filter: car.name === highlightedDriver ? 'drop-shadow(0 0 2px rgba(255,255,255,0.5))' : 'none'
-                }}>
-                  <rect
-                    x={posX -5}
-                    y={posY - 25}
-                    width={40}
-                    height={20}
-                    rx={5}
-                    fill={car.name === highlightedDriver ? 'rgba(0, 0, 0, 0.9)' : 'rgba(0, 0, 0, 0.7)'}
+                <g
+                  onMouseEnter={() => setHighlightedDriver(car.name)}
+                  onMouseLeave={() => setHighlightedDriver(null)}
+                  style={{ cursor: "pointer" }}
+                >
+                  {/* Shadow under the car. */}
+                  <motion.circle
+                    cx={posX}
+                    cy={posY + 2}
+                    r={highlightedDriver === car.name ? 10 : 8}
+                    fill="rgba(0, 0, 0, 0.3)"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
                   />
-                  <text
-                    x={posX +15}
-                    y={posY - 10}
-                    textAnchor="middle"
-                    fill="white"
-                    fontSize={car.name === highlightedDriver ? "13" : "12"}
-                    fontWeight={car.name === highlightedDriver ? "bold" : "normal"}
-                  >
-                    {car.name}
-                  </text>
+                  {/* Main car circle. */}
+                  <motion.circle
+                    cx={posX}
+                    cy={posY}
+                    r={highlightedDriver === car.name ? 10 : 8}
+                    fill={car.color}
+                    style={{
+                      stroke: "white",
+                      strokeWidth: 1,
+                    }}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                  />
                 </g>
-              )}
-            </g>
-          );
-        })}
+                {car.dotColor && (
+                  <motion.circle
+                    cx={posX}
+                    cy={posY}
+                    r={2}
+                    fill={car.dotColor}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    transition={{ duration: 0.5 }}
+                  />
+                )}
+                {true && (
+                  <g
+                    style={{
+                      filter:
+                        car.name === highlightedDriver
+                          ? "drop-shadow(0 0 2px rgba(255,255,255,0.5))"
+                          : "none",
+                    }}
+                  >
+                    <rect
+                      x={posX - 5}
+                      y={posY - 25}
+                      width={40}
+                      height={20}
+                      rx={5}
+                      fill={
+                        car.name === highlightedDriver
+                          ? "rgba(0, 0, 0, 0.9)"
+                          : "rgba(0, 0, 0, 0.7)"
+                      }
+                    />
+                    <text
+                      x={posX + 15}
+                      y={posY - 10}
+                      textAnchor="middle"
+                      fill="white"
+                      fontSize={car.name === highlightedDriver ? "13" : "12"}
+                      fontWeight={
+                        car.name === highlightedDriver ? "bold" : "normal"
+                      }
+                      fontFamily="Titillium Web, sans-serif"
+                      letterSpacing="0.5px"
+                    >
+                      {car.name}
+                    </text>
+                  </g>
+                )}
+              </g>
+            );
+          })}
       </svg>
       <NotificationsModal
         isOpen={isModalOpen}
